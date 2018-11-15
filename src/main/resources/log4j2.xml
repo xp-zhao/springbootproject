@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status 属性表示 log4j2 本身的日志信息打印级别 -->
+<!-- monitorInterval 属性表示每隔 300s 重新读取配置文件 -->
+<Configuration status="WARN" monitorInterval="30">
+    <!-- 定义常量，方便复用 -->
+    <properties>
+        <property name="LOG_HOME">./logs</property> <!-- 日志文件目录 -->
+        <property name="INFO_NAME">mylog_all_info.log</property> <!-- 日志文件名称 -->
+        <property name="ERROR_NAME">mylog_all_error.log</property> <!-- 日志文件名称 -->
+        <property name="pattern1" value="%d{yyyy-MM-dd HH:mm:ss.SSS}||[%t] %-5level %logger{36} - %msg%n" /> <!-- 日志打印格式 -->
+        <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS}||%level||%thread||%logger{0}||%msg%n" />
+    </properties>
+
+    <!-- appenders 日志的输出目的地 -->
+    <Appenders>
+        <!-- 输出到控制台 -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="debug" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${pattern}" />
+        </Console>
+        <!-- 输出到文件 -->
+        <!--<File name="File" fileName="${LOG_HOME}/${FILE_NAME}">-->
+            <!--<PatternLayout pattern="${pattern}" />-->
+        <!--</File>-->
+         <!--fileName 指定当前日志文件的位置-->
+         <!--filePattern 指定当发生 rolling 时，文件的转移和重命名规则-->
+        <RollingRandomAccessFile name="InfoFile"
+                                 fileName="${LOG_HOME}/${INFO_NAME}"
+                                 filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="DENY" onMismatch="ACCEPT"/> <!-- 输出非ERROR日志 -->
+            </Filters>
+            <PatternLayout pattern="${pattern}" />
+            <Policies>
+                <!-- SizeBasedTriggeringPolicy 指定当文件体积大于size指定的值时，触发Rolling  -->
+                <!-- TimeBasedTriggeringPolicy  这个配置需要和filePattern结合使用，
+                     注意filePattern中配置的文件重命名规则是${FILE_NAME}-%d{yyyy-MM-dd HH-mm}-%i，最小的时间粒度是mm，即分钟，
+                     TimeBasedTriggeringPolicy指定的size是1，结合起来就是每1分钟生成一个新文件。如果改成%d{yyyy-MM-dd HH}，
+                     最小粒度为小时，则每一个小时生成一个文件 -->
+                <TimeBasedTriggeringPolicy interval="1" />
+                <!--<SizeBasedTriggeringPolicy size="10 MB" />-->
+            </Policies>
+            <!-- DefaultRolloverStrategy  指定最多保存的文件个数 -->
+            <DefaultRolloverStrategy max="6" />
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="ErrorFile"
+                                 fileName="${LOG_HOME}/${ERROR_NAME}"
+                                 filePattern="${LOG_HOME}/$${date:yyyy-MM}/${FILE_NAME}-%d{yyyy-MM-dd}-%i.log">
+            <Filters>
+                <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />  <!-- 只输出ERROR日志 -->
+            </Filters>
+            <PatternLayout pattern="${pattern}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" />
+                <!--<SizeBasedTriggeringPolicy size="10 MB" />-->
+            </Policies>
+            <!-- DefaultRolloverStrategy  指定最多保存的文件个数 -->
+            <DefaultRolloverStrategy max="6" />
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.example.springbootproject" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="InfoFile"/>
+            <AppenderRef ref="ErrorFile"/>
+        </Logger>
+    </Loggers>
+</Configuration>

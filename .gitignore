@@ -18,6 +18,7 @@
 .mvn
 *.cmd
 mvnw
+logs/
 ### NetBeans ###
 /nbproject/private/
 /build/
