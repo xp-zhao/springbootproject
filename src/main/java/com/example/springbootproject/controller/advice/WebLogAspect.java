@@ -46,7 +46,7 @@ public class WebLogAspect
 		}
 	}
 	/**
-	 * 设置logid
+	 * 设置logid，请求中没有传入 logid，则随机生成一个
 	 * @param joinPoint
 	 */
 	private void setLogId(ProceedingJoinPoint joinPoint)
@@ -81,7 +81,9 @@ public class WebLogAspect
 	 */
 	private void showlog(ProceedingJoinPoint joinPoint,Object result,long du) throws NoSuchMethodException, SecurityException
 	{
-		SimpleLog simpleLog = new SimpleLog("controll");
+//		SimpleLog simpleLog = new SimpleLog("controll");
+		String className = joinPoint.getSignature().getDeclaringTypeName();
+		SimpleLog simpleLog = new SimpleLog(className.substring(className.lastIndexOf(".")+1));
 		simpleLog.setMethodName(((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest().getServletPath());
 		simpleLog.setResult(result);
 		simpleLog.setArgs(joinPoint.getArgs());
