@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +28,7 @@ public class ZooKeeperAutoConfig
 		CountDownLatch connectedSemaphore = new CountDownLatch(1);
 		try
 		{
-			result = new ZooKeeper(config.getHost() , config.getConnectionWaitTime() , event -> {
+			result = new ZooKeeper(config.getHost() , config.getSessiontimeout() , event -> {
 				if (Watcher.Event.KeeperState.SyncConnected == event.getState()) {
 					connectedSemaphore.countDown();
 				}

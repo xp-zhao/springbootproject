@@ -17,7 +17,7 @@ public class ZooKeeperConfig
 	/**
 	 * zk连接过期时间
 	 */
-	private int sessiontimetou;
+	private int sessiontimeout;
 	/**
 	 * 连接zookeeper时的超时时长,单位为秒，默认为30秒
 	 */

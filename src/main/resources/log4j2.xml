@@ -66,5 +66,10 @@
             <AppenderRef ref="InfoFile"/>
             <AppenderRef ref="ErrorFile"/>
         </Logger>
+        <Logger name="org.apache.zookeeper" level="DEBUG" additivity="false">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="InfoFile"/>
+            <AppenderRef ref="ErrorFile"/>
+        </Logger>
     </Loggers>
 </Configuration>
