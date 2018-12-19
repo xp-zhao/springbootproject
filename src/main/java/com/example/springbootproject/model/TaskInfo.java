@@ -7,7 +7,7 @@ import lombok.Data;
  * Created by xp-zhao on 2018/12/19.
  */
 @Data
-@TableName("t_migumanager_task_taskinfo")
+@TableName("task_taskinfo")
 public class TaskInfo
 {
 	private String groupCode;

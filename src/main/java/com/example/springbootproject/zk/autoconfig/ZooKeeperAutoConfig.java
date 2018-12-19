@@ -43,7 +43,6 @@ public class ZooKeeperAutoConfig
 		{
 			logger.error("连接 zk 失败");
 		}
-
 		return result;
 	}
 }
