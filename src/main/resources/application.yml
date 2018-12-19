@@ -1,0 +1,23 @@
+spring:
+#  zk 相关配置
+  zookeeper:
+    sessiontimeout: 60000
+    connectionWaitTime: 30
+    host: 47.98.49.140:2181,47.98.49.140:2182,47.98.49.140:2183
+#   数据库相关配置
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://10.25.245.165:3306/t_migu_ms_admin?allowMultiQueries=true
+    username: dev
+    password: dev
+# 服务端口号
+server:
+  port: 8086
+#  日志文件
+logging:
+  config: classpath:log4j2.xml
+#  mybatis-plus 相关配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
