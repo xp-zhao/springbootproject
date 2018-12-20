@@ -1,6 +1,7 @@
 package com.example.springbootproject.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.springbootproject.mapper.TaskInfoMapper;
 import com.example.springbootproject.model.TaskInfo;
 import com.example.springbootproject.model.resp.BaseResponse;
@@ -30,7 +31,7 @@ public class TaskController
 	public BaseResponse addTask(TaskInfo taskInfo){
 		try
 		{
-			taskInfoMapper.insert(taskInfo);
+//			taskInfoMapper.insert(taskInfo);
 		}
 		catch (Exception e)
 		{
@@ -46,6 +47,33 @@ public class TaskController
 		catch (Exception e)
 		{
 			logger.error("创建任务节点失败！",e);
+		}
+		return new BaseResponse(ReturnInfo.SUCCESS);
+	}
+
+	@RequestMapping("/updateTask")
+	public BaseResponse updateTask(TaskInfo taskInfo){
+		UpdateWrapper wrapper = new UpdateWrapper();
+		wrapper.eq("groupCode" , taskInfo.getGroupCode());
+		wrapper.eq("taskCode" , taskInfo.getTaskCode());
+		try
+		{
+			taskInfoMapper.update(taskInfo,wrapper);
+		}
+		catch (Exception e)
+		{
+			logger.error("更新任务失败！",e);
+			return new BaseResponse(ReturnInfo.FAILED);
+		}
+		try
+		{
+			zkServer.updateNodeData(TaskConstants.TASK_ROOTPATH + "/" + taskInfo.getGroupCode()+"/"+taskInfo.getTaskCode() ,
+				JSON.toJSONString(taskInfo));
+			logger.info("任务节点更新成功!");
+		}
+		catch (Exception e)
+		{
+			logger.error("更新任务节点失败！",e);
 		}
 		return new BaseResponse(ReturnInfo.SUCCESS);
 	}

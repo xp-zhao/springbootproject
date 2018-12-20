@@ -1,8 +1,15 @@
 package com.example.springbootproject.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.example.springbootproject.model.TaskInfo;
+import com.example.springbootproject.zk.storage.TaskGroupStorage;
+import com.example.springbootproject.zk.storage.TaskStorage;
+import com.example.springbootproject.zk.watcher.task.GroupWatcher;
 import com.example.springbootproject.zk.watcher.task.RootWatcher;
 import com.example.springbootproject.zk.watcher.task.TaskConstants;
+import com.example.springbootproject.zk.watcher.task.TaskWatcher;
+import com.example.springbootproject.zk.watcher.task.model.GroupInfo;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
@@ -25,10 +32,31 @@ public class ZookeeperServer
 
 	public void initWatcher() throws KeeperException, InterruptedException
 	{
-		Stat stat = zk.exists(TaskConstants.TASK_ROOTPATH , new RootWatcher(this));
-		if(null == stat){
-			String path = createNode(TaskConstants.TASK_ROOTPATH , "" , CreateMode.PERSISTENT);
-			zk.getChildren(path , new RootWatcher(this));
+//		Stat stat = zk.exists(TaskConstants.TASK_ROOTPATH , new RootWatcher(this));
+//
+//		if(null == stat){
+//			createNode(TaskConstants.TASK_ROOTPATH , "" , CreateMode.PERSISTENT);
+//		}
+		List<String> groups = zk.getChildren(TaskConstants.TASK_ROOTPATH , new RootWatcher(this));
+		logger.info("当前所有任务组："+groups);
+		for(String group : groups)
+		{
+			// 为所有任务组添加监听
+			List<String> tasks = zk.getChildren(TaskConstants.TASK_ROOTPATH + "/" + group , new GroupWatcher(this));
+			for(String task : tasks)
+			{
+				// 为每个任务添加监听
+				String taskInfoData = getData(TaskConstants.TASK_ROOTPATH + "/" + group + "/" + task , new TaskWatcher(this) ,
+					null);
+				TaskInfo taskInfo = JSON.parseObject(taskInfoData , TaskInfo.class);
+				// 保存已经监听了的任务
+				TaskStorage.INSTANCE.set(group+"|"+task , taskInfo);
+			}
+			GroupInfo groupInfo = new GroupInfo();
+			groupInfo.setGroupCode(group);
+			groupInfo.setTaksCode(tasks);
+			// 保存已经添加了监听的任务组
+			TaskGroupStorage.INSTANCE.setGroup(group,groupInfo);
 		}
 	}
 
