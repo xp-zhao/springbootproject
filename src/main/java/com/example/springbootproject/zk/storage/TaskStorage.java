@@ -17,6 +17,10 @@ public enum TaskStorage
 		map.put(taskCode , taskInfo);
 	}
 
+	public TaskInfo get(String code){
+		return map.get(code);
+	}
+
 	public void del(String taskCode){
 		map.remove(taskCode);
 	}

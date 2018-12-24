@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -46,6 +47,8 @@ public class DbTest
 		wrapper.eq("allowConcurrent" , "true");
 //		List<TaskInfo> taskInfos = taskInfoMapper.selectList(wrapper);
 		List<TaskInfo> taskInfos = taskInfoMapper.selectList(null);
+		Map<String, List<TaskInfo>> taskByGroup = taskInfos.stream()
+			.collect(Collectors.groupingBy(TaskInfo::getGroupCode));
 		List<String> collect = taskInfos.stream().map(TaskInfo::getGroupCode).distinct().collect(Collectors.toList());
 		List<TaskGroup> taskGroups = taskGroupMapper.selectList(null);
 //		noExistsAndCreate("/path");
