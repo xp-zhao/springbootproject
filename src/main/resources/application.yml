@@ -3,7 +3,8 @@ spring:
   zookeeper:
     sessiontimeout: 60000
     connectionWaitTime: 30
-    host: 47.98.49.140:2181,47.98.49.140:2182,47.98.49.140:2183
+    host: 10.25.245.162:2181,10.25.245.163:2181,10.25.245.164:2181
+#    host: 47.98.49.140:2181,47.98.49.140:2182,47.98.49.140:2183
 #   数据库相关配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
@@ -13,7 +14,7 @@ spring:
     password: 123456
 # 服务端口号
 server:
-  port: 8086
+  port: 8099
 #  日志文件
 logging:
   config: classpath:log4j2.xml
