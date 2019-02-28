@@ -3,8 +3,7 @@ spring:
   zookeeper:
     sessiontimeout: 60000
     connectionWaitTime: 30
-    host: 10.25.245.162:2181,10.25.245.163:2181,10.25.245.164:2181
-#    host: 47.98.49.140:2181,47.98.49.140:2182,47.98.49.140:2183
+    host: 47.98.49.140:2181,47.98.49.140:2182,47.98.49.140:2183
 #   数据库相关配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource

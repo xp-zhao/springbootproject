@@ -10,7 +10,7 @@
         <property name="pattern1" value="%d{yyyy-MM-dd HH:mm:ss.SSS}||[%t] %-5level %logger{36} - %msg%n" /> <!-- 日志打印格式 -->
         <property name="pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS}||%level||%thread||%logger{0}||%msg%n" />
 
-        <property name="kafka_bootstrap_servers">10.25.245.162:9092</property>
+        <property name="kafka_bootstrap_servers">10.25.245.162:18088</property>
         <property name="kafka_retries">3</property>
         <property name="kafka_linger_ms">1000</property> <!-- 如果你想减少请求的数量，你可以将linger.ms设置为大于某个值的东西 -->
         <property name="kafka_batch_size">2048</property>	<!-- 缓冲区大小 -->
@@ -67,45 +67,27 @@
             <DefaultRolloverStrategy max="6" />
         </RollingRandomAccessFile>
 
-        <!-- syncSend指是否同步等待，设为false表示发送消息后立即返回,true则会等待kafka响应后返回 -->
-        <Kafka name="buried" topic="test" syncSend="false">
-            <Filters>
-                <MarkerFilter marker="buried" onMatch="ACCEPT" onMismatch="DENY"/>
-                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
-            </Filters>
-            <PatternLayout charset="UTF-8" pattern="%d{yyyy-MM-dd HH:mm:ss SSS} [%t] %-5level %logger{36} %marker - %msg%n"/>
-            <Property name="bootstrap.servers" value="${kafka_bootstrap_servers}"/>
-            <Property name="retries" value="${kafka_retries}" />
-            <Property name="linger.ms" value="${kafka_linger_ms}" />
-            <Property name="batch.size" value="${kafka_batch_size}" />
-            <Property name="buffer.memory" value="${kafka_buffer_memory}" />
-        </Kafka>
-
-        <Kafka name="monitor" topic="test" syncSend="false">
-            <Filters>
-                <MarkerFilter marker="monitor" onMatch="ACCEPT" onMismatch="DENY"/>
-                <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY" />
-            </Filters>
-            <PatternLayout charset="UTF-8" pattern="%d{yyyy-MM-dd HH:mm:ss SSS} [%t] %-5level %logger{36} %marker - %msg%n"/>
-            <Property name="bootstrap.servers" value="${kafka_bootstrap_servers}"/>
-            <Property name="retries" value="${kafka_retries}" />
-            <Property name="linger.ms" value="${kafka_linger_ms}" />
-            <Property name="batch.size" value="${kafka_batch_size}" />
-            <Property name="buffer.memory" value="${kafka_buffer_memory}" />
+        <Kafka name="kafka" topic="test">
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} %L - %msg%n</pattern>
+            </PatternLayout>
+            <Property name="bootstrap.servers">10.25.245.162:18088</Property>
         </Kafka>
 
     </Appenders>
     <Loggers>
-        <Logger name="com.example.springbootproject" level="DEBUG" additivity="false">
+        <Logger name="com.example.springbootproject" level="info" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="InfoFile"/>
             <AppenderRef ref="ErrorFile"/>
-            <AppenderRef ref="monitor"/>
+            <AppenderRef ref="kafka"/>
         </Logger>
         <Logger name="org.apache.zookeeper" level="DEBUG" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="InfoFile"/>
             <AppenderRef ref="ErrorFile"/>
         </Logger>
+        <Logger name="org.apache.kafka" level="INFO" />
     </Loggers>
 </Configuration>

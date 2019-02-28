@@ -29,8 +29,8 @@ public class TestController
 	public BaseResponse test(@Valid BaseRequest req)
 	{
 		System.out.println(service.get("2013051233","xp"));
-		logger.info( MarkerFactory.getMarker("monitor"),"test-log-info");
-		logger.debug( MarkerFactory.getMarker("monitor"),"test-log-debug");
+		logger.info("test-log-info");
+		logger.debug("test-log-debug");
 		return new BaseResponse(ReturnInfo.SUCCESS);
 	}
 	@RequestMapping("/log")
