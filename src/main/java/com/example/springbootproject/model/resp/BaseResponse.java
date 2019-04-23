@@ -19,10 +19,19 @@ public class BaseResponse
 	 */
 	private String info;
 
+	private Object data;
+
 	public BaseResponse(ReturnInfo returnInfo)
 	{
 		this.code = returnInfo.getCode();
 		this.info = returnInfo.getInfo();
+	}
+
+	public BaseResponse(ReturnInfo returnInfo, Object data)
+	{
+		this.code = returnInfo.getCode();
+		this.info = returnInfo.getInfo();
+		this.data = data;
 	}
 	public BaseResponse(String code)
 	{

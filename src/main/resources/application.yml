@@ -12,8 +12,8 @@ spring:
     username: root
     password: 123456
 # 服务端口号
-server:
-  port: 8099
+#server:
+#  port: 8099
 #  日志文件
 logging:
   config: classpath:log4j2.xml
